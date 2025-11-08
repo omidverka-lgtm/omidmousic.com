@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title> سایت omidmousic </title>
+
+  <!-- فونت (fallback اگر بارگذاری نشد مشکلی نیست) -->
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------------------------
+       Remixgram — Single File Dark Neon
+       Author: OmidVerka (برای امید)
+       Single-file HTML + CSS
+    ---------------------------- */
+
+    :root{
+      --bg:#000000;
+      --panel:#ffae00;
+      --card:#36332b;
+      --muted:#9aa0a6;
+      --neon1:#ff0000; /* قرمز */
+      --neon2:#000000; /* مشکی*/
+      --accent-grad: linear-gradient(90deg,var(--neon2),var(--neon1));
+      --glass: rgba(255,255,255,0.03);
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      padding:0;
+      min-height:100vh;
+      font-family: "Vazirmatn", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(circle at 10% 10%, rgba(26,8,42,0.6), transparent 15%),
+                  radial-gradient(circle at 90% 90%, rgba(8,20,34,0.6), transparent 15%),
+                  var(--bg);
+      color:#ffffff;
+      direction: rtl;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* layout */
+    .app {
+      display:flex;
+      gap:30px;
+      width:100%;
+      max-width:1400px;
+      margin:28px auto;
+      padding:20px;
+      align-items:flex-start;
+    }
+
+    /* LEFT: content (songs) */
+    .content {
+      flex:1;
+      min-width:0;
+      padding:18px;
+      padding-right:6px;
+      margin-left:0;
+    }
+
+    .topbar {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:20px;
+    }
+
+    .title {
+      font-size:1.4rem;
+      font-weight:800;
+      letter-spacing:0.6px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .title .logo-mark{
+      width:44px;
+      height:44px;
+      border-radius:10px;
+      background: linear-gradient(135deg,var(--neon1),var(--neon2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      box-shadow: 0 6px 30px rgba(106,0,244,0.18);
+    }
+
+    .search {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:var(--glass);
+      border-radius:40px;
+      padding:8px 14px;
+      border:1px solid rgba(255,255,255,0.03);
+      width:420px;
+      max-width:48%;
+      box-shadow: 0 6px 30px rgba(10,8,15,0.6);
+    }
+
+    .search input{
+      background:transparent;
+      border:0;
+      outline:0;
+      color: #eee;
+      width:100%;
+      font-size:0.95rem;
+    }
+
+    .search .ico {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      background:linear-gradient(180deg, rgba(255, 0, 0, 0.02), rgba(255,255,255,0.01));
+      color:var(--neon1);
+      font-weight:700;
+      box-shadow: 0 6px 18px rgba(106,0,244,0.12);
+    }
+
+    /* grid for songs (left) */
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap:18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      overflow:hidden;
+      position:relative;
+      padding-bottom:12px;
+      transition: transform .35s cubic-bezier(.2,.9,.3,1), box-shadow .35s;
+      box-shadow: 0 6px 22px rgba(0,0,0,0.6);
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;
+    }
+
+    .card:hover{
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(26,8,42,0.6), 0 0 30px rgba(106,0,244,0.08);
+      border:1px solid rgba(106,0,244,0.18);
+    }
+
+    .cover {
+      width:100%;
+      height:150px;
+      background:#0b0b0b;
+
+      display:block;
+      object-fit:cover;
+      border-bottom:1px solid rgba(255,255,255,0.03);
+    }
+
+    .meta {
+      padding:12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .meta h4{
+      margin:0;
+      font-size:0.95rem;
+      font-weight:700;
+      color:#ffffff;
+    }
+
+    .meta p{
+      margin:0;
+      font-size:0.82rem;
+      color:var(--muted);
+      line-height:1.15;
+    }
+
+    /* player + controls inside card */
+    .meta .controls {
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .meta audio{
+      width:100%;
+      outline:none;
+      border-radius:10px;
+      background:transparent;
+    }
+
+    .btn-download {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      text-decoration:none;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:0.85rem;
+      color:#fff;
+      background: linear-gradient(90deg, rgba(190, 28, 28, 0.95), rgba(39, 36, 36, 0.95));
+      box-shadow: 0 8px 26px rgba(24,164,255,0.08);
+    }
+
+    .btn-download:hover{
+      transform:translateY(-3px);
+    }
+
+    /* little neon bar (bottom of card) */
+    .neon-bar {
+      position:absolute;
+      bottom:8px;
+      right:12px;
+      left:12px;
+      height:4px;
+      border-radius:8px;
+      background: linear-gradient(90deg, rgba(255, 196, 0, 0.9), rgba(244, 0, 0, 0.9));
+      opacity:0.0;
+      transform:scaleX(0.6);
+      transition: all .35s;
+    }
+
+    .card:hover .neon-bar{
+      opacity:1;
+      transform:scaleX(1);
+    }
+
+    /* RIGHT: big panel card */
+    .panel {
+      width:320px;
+      min-width:260px;
+      max-width:340px;
+      background:
+        linear-gradient(180deg, rgba(106,0,244,0.06), rgba(24,164,255,0.02)),
+        var(--panel);
+      border-radius:22px;
+      padding:26px;
+      box-shadow: 0 10px 40px rgba(106,0,244,0.12), -8px 16px 40px rgba(0,0,0,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+      position:sticky;
+      top:28px;
+      height:calc(100vh - 56px);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:14px;
+      align-self:flex-start;
+    }
+
+    .panel .panel-head{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .panel .panel-head .big-logo{
+      width:82px;
+      height:82px;
+      border-radius:16px;
+      background: linear-gradient(135deg,var(--neon1),var(--neon2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.6rem;
+      font-weight:900;
+      color:#ffffff;
+      box-shadow:0 12px 40px rgba(106,0,244,0.2);
+    }
+
+    .panel .panel-head .panel-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .panel .panel-head .panel-title h2{
+      font-size:1.25rem;
+      margin:0;
+      font-weight:900;
+      color:#ffffff;
+    }
+
+    .panel .panel-head .panel-title p{
+      margin:0;
+      color:var(--muted);
+      font-size:0.9rem;
+    }
+
+    .panel .big-menu{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:8px;
+    }
+
+    .panel .big-menu a{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      padding:14px 16px;
+      border-radius:12px;
+      font-weight:800;
+      color:#ffffff;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(43, 255, 0, 0.02);
+      transition: all .28s;
+      box-shadow: 0 6px 20px rgba(184, 44, 44, 0.6);
+      font-size:1rem;
+    }
+
+    .panel .big-menu a .kbd {
+      padding:6px 10px;
+      border-radius:8px;
+      background: rgba(0,0,0,0.25);
+      font-weight:700;
+      color:var(--neon2);
+      border:1px solid rgba(24,164,255,0.08);
+    }
+
+    .panel .big-menu a:hover{
+      transform:translateY(-6px);
+      background: linear-gradient(90deg, rgba(24,164,255,0.06), rgba(106,0,244,0.06));
+      border:1px solid rgba(106,0,244,0.16);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+    }
+
+    .panel .support {
+      background: linear-gradient(90deg, rgba(106,0,244,0.06), rgba(24,164,255,0.04));
+      padding:14px;
+      border-radius:12px;
+      border:1px solid rgba(255, 255, 255, 0.02);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .panel .support .contact {
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .panel .support a.contact-link {
+      text-decoration:none;
+      color:#9b0000;
+      font-weight:800;
+      background:transparent;
+      padding:8px 10px;
+      border-radius:8px;
+    }
+
+    .panel .support p.note{
+      margin:0;
+      color:var(--muted);
+      font-size:0.86rem;
+      line-height:1.35;
+    }
+
+    /* footer small */
+    .panel .small-footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:0.82rem;
+    }
+
+    /* responsive */
+    @media (max-width:1100px){
+      .app{max-width:1000px;padding:16px}
+      .panel{width:300px}
+      .search{width:46%}
+    }
+
+    @media (max-width:900px){
+      .app{flex-direction:column-reverse; gap:18px}
+      .panel{width:100%; height:auto; position:relative; top:auto; padding:18px}
+      .content{margin:0}
+      .topbar{flex-direction:column; align-items:flex-start; gap:12px}
+      .search{width:100%}
+      .grid{grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:14px}
+    }
+
+    @media (max-width:500px){
+      .card .cover{height:120px}
+      .panel .big-menu a{font-size:0.95rem;padding:12px}
+      .panel .panel-head .big-logo{width:64px;height:64px}
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted);font-size:0.86rem}
+    a.link-muted{color:var(--neon2);text-decoration:none;font-weight:800}
+  </style>
+</head>
+
+<body>
+  <div class="app" role="application">
+
+    <!-- LEFT: songs/content -->
+    <main class="content" aria-label="آهنگ‌ها">
+      <div class="topbar">
+        <div class="title">
+          <span class="logo-mark">OM</span>
+          <span> omidmousic — ریمیکس‌ها</span>
+        </div>
+
+        <div class="search" role="search">
+          <input type="search" placeholder="جستجوی ریمیکس، خواننده یا دی‌جی..." aria-label="جستجو">
+          <div class="ico">🔎</div>
+        </div>
+      </div>
+
+      <!-- grid of 25 cards -->
+      <section class="grid" aria-live="polite">
+        <!-- We'll generate 25 cards manually here (covers are placeholders, audio sample used) -->
+        <!-- Using a few public sample mp3 links for demo (repeat slightly to fill 25) -->
+        <!-- Card template:
+             .card > img.cover + .meta { h4 + p + controls(audio + download) } + .neon-bar
+        -->
+
+        <!-- We'll use SoundHelix example tracks for demo playback -->
+        <!-- 1 -->
+        <article class="card" role="article" aria-label="ریمیکس 1">
+          <img class="cover" src="ساواش.jpg" alt="کاور ریمیکس 1">
+          <div class="meta">
+            <h4> ساواش - تو خوشگل منی</h4>
+            <p class="muted">savash• ریمیکس ایرانی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="To-Khoshgel-Mani.mp3" type="audio/mpeg">
+                مرورگرتون پلیر صوتی رو پشتیبانی نمیکند.
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" download>دانلود</a>
+              <span class="muted">2:58</span>
+            </div>
+          </div>
+          <div class="neon-bar" aria-hidden="true"></div>
+        </article>
+
+        <!-- 2 -->
+        <article class="card" role="article" aria-label="ریمیکس 2">
+          <img class="cover" src="سهراب.jpg" alt="کاور ریمیکس 2">
+          <div class="meta">
+            <h4> سهراب پاکزد - مو مشکی</h4>
+            <p class="muted">sohrab • ریمیکس ایرانی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="Sohrab Pakzad _ Moo Meshki (320).mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" download>دانلود</a>
+              <span class="muted">2:16 </span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 3 -->
+        <article class="card" role="article" aria-label="ریمیکس 3">
+          <img class="cover" src="مسعود صادقلو.jpg" alt="کاور ریمیکس 3">
+          <div class="meta">
+            <h4> مسعود صادقلو - روزای سخت </h4>
+            <p class="muted"> Masoud • ریمیکس ایرانی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="Masoud Sadeghloo - Rozaye Sakht [128].mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" download>دانلود</a>
+              <span class="muted">3:45</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 4 -->
+        <article class="card" role="article" aria-label="ریمیکس 4">
+          <img class="cover" src="Alireza-Talischi.jpg" alt="کاور ریمیکس 4">
+          <div class="meta">
+            <h4> علیرضا طلیسچی - قاف</h4>
+            <p class="muted">talischi • ریمیکس ایرانی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="Alireza Talischi - Ghaf (320).mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" download>دانلود</a>
+              <span class="muted">3:22</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 5 -->
+        <article class="card" role="article" aria-label="ریمیکس 5">
+          <img class="cover" src="مسلم.jpg" alt="کاور ریمیکس 5">
+          <div class="meta">
+            <h4> مسلم فتاحی - امبولانس </h4>
+            <p class="muted"> fattahi • ریمیکس ایرانی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="Moslem Fatahi - Zang Bezan Ambulance (320) (1).mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" download>دانلود</a>
+              <span class="muted">4:00</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 6 -->
+        <article class="card">
+          <img class="cover" src="نوان.webp" alt="کاور ریمیکس 6">
+          <div class="meta">
+            <h4> نوان - مسکن</h4>
+            <p class="muted"> novan • ریمیکس ایرانی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="نوان - مسکن.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" download>دانلود</a>
+              <span class="muted">3:34</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 7 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+7" alt="کاور ریمیکس 7">
+          <div class="meta">
+            <h4>ریمیکس Ariana Grande — Side To Side (Remix)</h4>
+            <p class="muted">Ariana Grande • ریمیکس خارجی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" download>دانلود</a>
+              <span class="muted">3:20</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 8 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+8" alt="کاور ریمیکس 8">
+          <div class="meta">
+            <h4>ریمیکس دی‌جی آرون — Party Mix</h4>
+            <p class="muted">DJ Aron • ریمیکس ایرانی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" download>دانلود</a>
+              <span class="muted">3:58</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 9 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+9" alt="کاور ریمیکس 9">
+          <div class="meta">
+            <h4>ریمیکس The Chainsmokers — Closer (Remix)</h4>
+            <p class="muted">The Chainsmokers • ریمیکس خارجی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" download>دانلود</a>
+              <span class="muted">4:10</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 10 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+10" alt="کاور ریمیکس 10">
+          <div class="meta">
+            <h4>ریمیکس Shawn Mendes — Señorita (Remix)</h4>
+            <p class="muted">Shawn Mendes • ریمیکس خارجی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" download>دانلود</a>
+              <span class="muted">3:56</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 11 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+11" alt="کاور ریمیکس 11">
+          <div class="meta">
+            <h4>ریمیکس Local DJ — Sunset Mix</h4>
+            <p class="muted">Local DJ • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" download>دانلود</a>
+              <span class="muted">3:15</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 12 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+12" alt="کاور ریمیکس 12">
+          <div class="meta">
+            <h4>ریمیکس Old Track — Retro Remix</h4>
+            <p class="muted">Retro • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" download>دانلود</a>
+              <span class="muted">3:05</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 13 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+13" alt="کاور ریمیکس 13">
+          <div class="meta">
+            <h4>ریمیکس Pop Hit — Club Remix</h4>
+            <p class="muted">Pop Hit • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" download>دانلود</a>
+              <span class="muted">3:44</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 14 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+14" alt="کاور ریمیکس 14">
+          <div class="meta">
+            <h4>ریمیکس DJ Mix — Festival Cut</h4>
+            <p class="muted">Festival • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" download>دانلود</a>
+              <span class="muted">4:12</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 15 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+15" alt="کاور ریمیکس 15">
+          <div class="meta">
+            <h4>ریمیکس Summer — Heatwave Remix</h4>
+            <p class="muted">Summer Mix • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" download>دانلود</a>
+              <span class="muted">3:50</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 16 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+16" alt="کاور ریمیکس 16">
+          <div class="meta">
+            <h4>ریمیکس Night Drive — Smooth Remix</h4>
+            <p class="muted">Night Drive • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" download>دانلود</a>
+              <span class="muted">3:28</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 17 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+17" alt="کاور ریمیکس 17">
+          <div class="meta">
+            <h4>ریمیکس Club Beat — Heavy Drop</h4>
+            <p class="muted">Club Beat • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" download>دانلود</a>
+              <span class="muted">4:03</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 18 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+18" alt="کاور ریمیکس 18">
+          <div class="meta">
+            <h4>ریمیکس Persian Night — Deep Remix</h4>
+            <p class="muted">Persian Night • ریمیکس ایرانی</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" download>دانلود</a>
+              <span class="muted">3:39</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 19 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+19" alt="کاور ریمیکس 19">
+          <div class="meta">
+            <h4>ریمیکس Electro Pop — Bright Mix</h4>
+            <p class="muted">Electro Pop • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" download>دانلود</a>
+              <span class="muted">4:05</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 20 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+20" alt="کاور ریمیکس 20">
+          <div class="meta">
+            <h4>ریمیکس Late Night — Chillout Mix</h4>
+            <p class="muted">Chillout • ریمیکس</p>
+            <div class="controls">
+              <audio controlspreload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" download>دانلود</a>
+              <span class="muted">3:59</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 21 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+21" alt="کاور ریمیکس 21">
+          <div class="meta">
+            <h4>ریمیکس Global Beat — World Remix</h4>
+            <p class="muted">World • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" download>دانلود</a>
+              <span class="muted">3:25</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 22 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+22" alt="کاور ریمیکس 22">
+          <div class="meta">
+            <h4>ریمیکس Deep House — Smooth Beat</h4>
+            <p class="muted">Deep House • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" download>دانلود</a>
+              <span class="muted">3:47</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 23 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+23" alt="کاور ریمیکس 23">
+          <div class="meta">
+            <h4>ریمیکس Sunrise — Morning Mix</h4>
+            <p class="muted">Sunrise • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" download>دانلود</a>
+              <span class="muted">3:41</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 24 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+24" alt="کاور ریمیکس 24">
+          <div class="meta">
+            <h4>ریمیکس Underground — Bass Mix</h4>
+            <p class="muted">Underground • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" download>دانلود</a>
+              <span class="muted">4:08</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+        <!-- 25 -->
+        <article class="card">
+          <img class="cover" src="https://via.placeholder.com/640x360.png?text=Remix+25" alt="کاور ریمیکس 25">
+          <div class="meta">
+            <h4>ریمیکس Finale — Grand Mix</h4>
+            <p class="muted">Finale • ریمیکس</p>
+            <div class="controls">
+              <audio controls preload="none">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <a class="btn-download" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" download>دانلود</a>
+              <span class="muted">4:15</span>
+            </div>
+          </div>
+          <div class="neon-bar"></div>
+        </article>
+
+      </section>
+
+      <footer style="margin-top:26px;text-align:center;color:var(--muted);font-size:0.9rem;">
+         © ۲۰۲۵ Remixgram - طراحی و توسعه توسط امید صدیقی
+      </footer>
+    </main>
+
+    <!-- RIGHT: big panel card -->
+    <aside class="panel" role="complementary" aria-label="پنل">
+      <div>
+        <div class="panel-head">
+          <div class="big-logo">OM</div>
+          <div class="panel-title">
+            <h2>پنل مدیریت omidmousic</h2>
+            <p class="muted">دسترسی سریع به بخش‌ها، پشتیبانی و نصب اپلیکیشن</p>
+          </div>
+        </div>
+
+        <nav class="big-menu" aria-label="منوی اصلی">
+          <a href="asli.html" title="صفحه اصلی">
+            <span class="kbd">🏠</span>
+            صفحه اصلی
+          </a>
+          <a href="index.html" title="پشتیبانی">
+            <span class="kbd">🛠</span>
+            پشتیبانی
+          </a>
+          <a href="akhbar.html" title="اخبار">
+            <span class="kbd">📢</span>
+            اخبار
+          </a>
+          <a href="30" title="نصب اپلیکیشن">
+            <span class="kbd">📱</span>
+            نصب اپلیکیشن
+          </a>
+        </nav>
+
+        <div style="height:14px"></div>
+
+        <div class="support">
+          <p class="note muted">برای پشتیبانی و ارتباط مستقیم:</p>
+
+          <div class="contact">
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <a class="contact-link" href="https://t.me/omidmusic" target="_blank" rel="noopener">تلگرام: omidmousic@</a>
+              <a class="contact-link" href="mailto:omidverka@gmail.com">ایمیل: omidverka@gmail.com</a>
+            </div>
+          </div>
+
+          <p class="note muted" style="margin-top:8px">
+          
+          </p>
+        </div>
+      </div>
+
+      <div class="small-footer">
+       
+        <div class="muted">تمام حقوق برای omidmousic محفوظ است.</div>
+      </div>
+    </aside>
+
+  </div>
+</body>
+</html>
